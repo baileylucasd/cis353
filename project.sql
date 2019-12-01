@@ -105,6 +105,19 @@ CONSTRAINT cID3 FOREIGN KEY (cID)
 
 -- 
 SET FEEDBACK OFF 
+
+INSERT INTO clownCar VALUES (1, 'clowny', 'silverado', 1);
+INSERT INTO clownCar VALUES (2, 'bozo', 'prius', 2);
+INSERT INTO clown VALUES (1, 'Jef', 20);
+INSERT INTO clown VALUES (2, 'Cam', 27);
+INSERT INTO clownCourse VALUES (1, 'Juggling', 3);
+INSERT INTO clownProfessor VALUES (1, 'Jesus!', 35);
+INSERT INTO sponsor VALUES (1, 'macDangles');
+INSERT INTO award VALUES (1, 1, 01/30/2019, 'Participation', 300);
+INSERT INTO locations VALUES (1, 'Allendale');
+INSERT INTO enrolledIn VALUES (1, 1, 'Winter', 2020);
+INSERT INTO teaches VALUES (1, 1, 'Winter', 2020);
+
 < The INSERT statements that populate the tables> 
 Important: Keep the number of rows in each table small enough so that the results of your queries can be verified by hand. See the Sailors database as an example. 
 SET FEEDBACK ON 
