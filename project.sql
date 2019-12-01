@@ -18,7 +18,9 @@ CREATE TABLE clown
 (
 cSSN INTEGER PRIMARY KEY,
 name CHAR(15) NOT NULL,
-DOB DATE
+age INTEGER,
+
+CONSTRAINT Carl CHECK (name != 'Carl')
 
 );
 
@@ -33,7 +35,7 @@ CREATE TABLE clownProfessor
 (
 pSSN INTEGER PRIMARY KEY,
 name CHAR(15) NOT NULL,
-DOB DATE
+age INTEGER
 );
 
 CREATE TABLE sponsor
@@ -52,10 +54,12 @@ amount INTEGER,
 PRIMARY KEY(cSSN, sID, date),
 
 CONSTRAINT cSSN1 FOREIGN KEY (cSSN)
-    REFERENCES clown(cSSN)
+    REFERENCES clown(cSSN),
 
 CONSTRAINT sID1 FOREIGN KEY (sID)
-    REFERENCES sponsor(sID)
+    REFERENCES sponsor(sID),
+
+CONSTRAINT a1 CHECK( NOT (type=='Participation' AND amount>500 ))
 );
 
 CREATE TABLE locations
@@ -95,6 +99,8 @@ CONSTRAINT pSSN1 FOREIGN KEY (pSSN)
 CONSTRAINT cID3 FOREIGN KEY (cID)
     REFERENCCES clownCourse (cID)
 );
+
+
 
 
 -- 
