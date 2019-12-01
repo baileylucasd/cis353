@@ -1,11 +1,102 @@
-SPOOL project.out 
+SPOOL project.out
 SET ECHO ON 
 /* 
 CIS 353 - Database Design Project 
-<One line per team member name> 
+Lucas Bailey
+Sam Petrarca
 */ 
-< The SQL/DDL code that creates your schema > 
-In the DDL, every IC must have a unique name; e.g. IC5, IC10, IC15, etc. 
+
+CREATE TABLE clownCars
+(
+vIN INTEGER PRIMARY KEY,
+make CHAR(15) NOT NULL,
+model CHAR(15) NOT NULL,
+cSSN INTEGER NOT NULL
+);
+
+CREATE TABLE clown
+(
+cSSN INTEGER PRIMARY KEY,
+name CHAR(15) NOT NULL,
+DOB DATE
+
+);
+
+CREATE TABLE clownCourse
+(
+cID INTEGER PRIMARY KEY,
+subject CHAR(15) NOT NULL,
+credits INTEGER
+);
+
+CREATE TABLE clownProfessor
+(
+pSSN INTEGER PRIMARY KEY,
+name CHAR(15) NOT NULL,
+DOB DATE
+);
+
+CREATE TABLE sponsor
+(
+sID INTEGER PRIMARY KEY,
+sName CHAR(15) NOT NULL,
+);
+
+CREATE TABLE award
+(
+cSSN INTEGER,
+sID INTEGER,
+date DATE,
+type CHAR(15),
+amount INTEGER,
+PRIMARY KEY(cSSN, sID, date),
+
+CONSTRAINT cSSN1 FOREIGN KEY (cSSN)
+    REFERENCES clown(cSSN)
+
+CONSTRAINT sID1 FOREIGN KEY (sID)
+    REFERENCES sponsor(sID)
+);
+
+CREATE TABLE locations
+(
+cID INTEGER,
+location char(20),
+PRIMARY KEY(cID, location),
+
+CONSTRAINT cID1 FOREIGN KEY (cID)
+    REFERENCES clownCourse(cID)
+);
+
+CREATE TABLE enrolledIN
+(
+cSSN INTEGER,
+cID INTEGER,
+sem CHAR(10),
+year INTEGER,
+PRIMARY KEY(cSSN, cID),
+
+CONSTRAINT cID2 FOREIGN KEY (cID)
+    REFERENCES clownCourse(cID),
+CONSTRAINT cSSN2 FOREIGN KEY (cSSN)
+    REFERENCES clown(cSSN)
+);
+
+CREATE TABLE teaches
+(
+pSSN INTEGER,
+cID INTEGER,
+sem CHAR(10),
+year INTEGER,
+PRIMARY KEY(pSSN, cID),
+
+CONSTRAINT pSSN1 FOREIGN KEY (pSSN)
+    REFERENCES clownProfessor(pSSN),
+CONSTRAINT cID3 FOREIGN KEY (cID)
+    REFERENCCES clownCourse (cID)
+);
+
+
 -- 
 SET FEEDBACK OFF 
 < The INSERT statements that populate the tables> 
