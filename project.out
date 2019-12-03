@@ -1,0 +1,521 @@
+SQL> SET ECHO ON
+SQL> /*
+SQL> CIS 353 - Database Design Project
+SQL> Lucas Bailey
+SQL> Sam Petrarca
+SQL> */
+SQL> SET sqlblanklines ON
+SQL> 
+SQL> DROP TABLE sponsor;
+DROP TABLE sponsor
+           *
+ERROR at line 1:
+ORA-02449: unique/primary keys in table referenced by foreign keys 
+
+
+SQL> DROP TABLE award;
+
+Table dropped.
+
+SQL> DROP TABLE locations;
+
+Table dropped.
+
+SQL> DROP TABLE enrolledIn;
+
+Table dropped.
+
+SQL> DROP TABLE teaches;
+
+Table dropped.
+
+SQL> DROP TABLE clownCourse;
+
+Table dropped.
+
+SQL> DROP TABLE clownCar;
+
+Table dropped.
+
+SQL> DROP TABLE clownProfessor;
+
+Table dropped.
+
+SQL> DROP TABLE clown;
+
+Table dropped.
+
+SQL> 
+SQL> CREATE TABLE clown
+  2  (
+  3  cSSN INTEGER PRIMARY KEY,
+  4  name CHAR(15) NOT NULL,
+  5  age INTEGER,
+  6  
+  7  CONSTRAINT Carl CHECK (name != 'Carl')
+  8  
+  9  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE clownCar
+  2  (
+  3  vIN INTEGER PRIMARY KEY,
+  4  make CHAR(15) NOT NULL,
+  5  model CHAR(15) NOT NULL,
+  6  cSSN INTEGER NOT NULL,
+  7  
+  8  CONSTRAINT ccIC1 FOREIGN KEY (cSSN) REFERENCES clown(cSSN)
+  9  	 ON DELETE CASCADE
+ 10  	 DEFERRABLE INITIALLY DEFERRED
+ 11  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE clownCourse
+  2  (
+  3  cID INTEGER PRIMARY KEY,
+  4  subject CHAR(15) NOT NULL,
+  5  credits INTEGER
+  6  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE clownProfessor
+  2  (
+  3  pSSN INTEGER PRIMARY KEY,
+  4  name CHAR(15) NOT NULL,
+  5  age INTEGER
+  6  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE sponsor
+  2  (
+  3  sID INTEGER PRIMARY KEY,
+  4  sName CHAR(15) NOT NULL
+  5  );
+CREATE TABLE sponsor
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object 
+
+
+SQL> 
+SQL> CREATE TABLE award
+  2  (
+  3  cSSN INTEGER,
+  4  sID INTEGER,
+  5  doa CHAR(10),
+  6  type CHAR(15),
+  7  amount INTEGER,
+  8  PRIMARY KEY(cSSN, sID, doa),
+  9  
+ 10  CONSTRAINT cSSN1 FOREIGN KEY (cSSN)
+ 11  	 REFERENCES clown(cSSN),
+ 12  
+ 13  CONSTRAINT sID1 FOREIGN KEY (sID)
+ 14  	 REFERENCES sponsor(sID),
+ 15  
+ 16  CONSTRAINT a1 CHECK((NOT (type = 'Participation' AND amount>500 )))
+ 17  
+ 18  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE locations
+  2  (
+  3  cID INTEGER,
+  4  location char(20),
+  5  PRIMARY KEY(cID, location),
+  6  
+  7  CONSTRAINT cID1 FOREIGN KEY (cID)
+  8  	 REFERENCES clownCourse(cID)
+  9  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE enrolledIn
+  2  (
+  3  cSSN INTEGER,
+  4  cID INTEGER,
+  5  sem CHAR(10),
+  6  year INTEGER,
+  7  PRIMARY KEY(cSSN, cID),
+  8  
+  9  CONSTRAINT cID2 FOREIGN KEY (cID)
+ 10  	 REFERENCES clownCourse(cID),
+ 11  CONSTRAINT cSSN2 FOREIGN KEY (cSSN)
+ 12  	 REFERENCES clown(cSSN)
+ 13  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE teaches
+  2  (
+  3  pSSN INTEGER,
+  4  cID INTEGER,
+  5  sem CHAR(10),
+  6  year INTEGER,
+  7  PRIMARY KEY(pSSN, cID),
+  8  
+  9  CONSTRAINT pSSN1 FOREIGN KEY (pSSN)
+ 10  	 REFERENCES clownProfessor(pSSN),
+ 11  CONSTRAINT cID3 FOREIGN KEY (cID)
+ 12  	 REFERENCES clownCourse (cID)
+ 13  );
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> --
+SQL> SET FEEDBACK OFF
+SQL> 
+SQL> INSERT INTO clownCar VALUES (2, 'clowny', 'silverado', 3);
+SQL> INSERT INTO clownCar VALUES (3, 'bozo', 'prius', 2);
+SQL> INSERT INTO clown VALUES (1, 'Jef', 20);
+SQL> INSERT INTO clown VALUES (2, 'Cam', 25);
+SQL> INSERT INTO clown VALUES (3, 'Daniel', 70);
+SQL> INSERT INTO clownCourse VALUES (1, 'Juggling', 3);
+SQL> INSERT INTO clownCourse VALUES (2, 'Driving', 2);
+SQL> INSERT INTO clownCourse VALUES (3, 'Lion Wrestling', 4);
+SQL> INSERT INTO clownProfessor VALUES (1, 'Jarvis', 35);
+SQL> INSERT INTO sponsor VALUES (1, 'macDangles');
+INSERT INTO sponsor VALUES (1, 'macDangles')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (BAILEYLU.SYS_C00776772) violated 
+
+
+SQL> INSERT INTO award VALUES (1, 1, '2019-01-30', 'Participation', 300);
+SQL> INSERT INTO award VALUES (2, 1, '2019-02-10', 'Great Nose', 300);
+SQL> INSERT INTO locations VALUES (1, 'Allendale');
+SQL> INSERT INTO locations VALUES (2, 'Pew');
+SQL> INSERT INTO enrolledIn VALUES (1, 1, 'Winter', 2020);
+SQL> INSERT INTO enrolledIn VALUES (1, 2, 'Winter', 2020);
+SQL> INSERT INTO enrolledIn VALUES (1, 3, 'Summer', 2020);
+SQL> INSERT INTO enrolledIn VALUES (2, 1, 'Winter', 2020);
+SQL> INSERT INTO enrolledIN VALUES (2, 3, 'Summer', 2020);
+SQL> INSERT INTO enrolledIn VALUES (3, 3, 'Summer', 2020);
+SQL> INSERT INTO teaches VALUES (1, 1, 'Winter', 2020);
+SQL> INSERT INTO teaches VALUES (1, 2, 'Winter', 2020);
+SQL> 
+SQL> /*< The INSERT statements that populate the tables>
+SQL> Important: Keep the number of rows in each table small enough so that the results of your queries can be verified by hand. See the Sailors database as an example. */
+SQL> SET FEEDBACK ON
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> --
+SQL> /*< One query (per table) of the form: SELECT * FROM table; in order to print out your database > */
+SQL> 
+SQL> SELECT * FROM clownCar;
+
+       VIN MAKE            MODEL                 CSSN                           
+---------- --------------- --------------- ----------                           
+         2 clowny          silverado                3                           
+         3 bozo            prius                    2                           
+
+2 rows selected.
+
+SQL> SELECT * FROM clown;
+
+      CSSN NAME                   AGE                                           
+---------- --------------- ----------                                           
+         1 Jef                     20                                           
+         2 Cam                     25                                           
+         3 Daniel                  70                                           
+
+3 rows selected.
+
+SQL> SELECT * FROM clownCourse;
+
+       CID SUBJECT            CREDITS                                           
+---------- --------------- ----------                                           
+         1 Juggling                 3                                           
+         2 Driving                  2                                           
+         3 Lion Wrestling           4                                           
+
+3 rows selected.
+
+SQL> SELECT * FROM clownProfessor;
+
+      PSSN NAME                   AGE                                           
+---------- --------------- ----------                                           
+         1 Jarvis                  35                                           
+
+1 row selected.
+
+SQL> SELECT * FROM sponsor;
+
+       SID SNAME                                                                
+---------- ---------------                                                      
+         1 macDangles                                                           
+
+1 row selected.
+
+SQL> SELECT * FROM award;
+
+      CSSN        SID DOA        TYPE                AMOUNT                     
+---------- ---------- ---------- --------------- ----------                     
+         1          1 2019-01-30 Participation          300                     
+         2          1 2019-02-10 Great Nose             300                     
+
+2 rows selected.
+
+SQL> SELECT * FROM locations;
+
+       CID LOCATION                                                             
+---------- --------------------                                                 
+         1 Allendale                                                            
+         2 Pew                                                                  
+
+2 rows selected.
+
+SQL> SELECT * FROM enrolledIn;
+
+      CSSN        CID SEM              YEAR                                     
+---------- ---------- ---------- ----------                                     
+         1          1 Winter           2020                                     
+         1          2 Winter           2020                                     
+         1          3 Summer           2020                                     
+         2          1 Winter           2020                                     
+         2          3 Summer           2020                                     
+         3          3 Summer           2020                                     
+
+6 rows selected.
+
+SQL> SELECT * FROM teaches;
+
+      PSSN        CID SEM              YEAR                                     
+---------- ---------- ---------- ----------                                     
+         1          1 Winter           2020                                     
+         1          2 Winter           2020                                     
+
+2 rows selected.
+
+SQL> 
+SQL> --
+SQL> < The SQL queries>. Include the following for each query:
+SP2-0734: unknown command beginning "< The SQL ..." - rest of line ignored.
+SQL> 6. A comment line stating the query number and the feature(s) it demonstrates (e.g. – Q25 – correlated subquery).
+SP2-0734: unknown command beginning "6. A comme..." - rest of line ignored.
+SQL> 7. A comment line stating the query in English.
+SP2-0734: unknown command beginning "7. A comme..." - rest of line ignored.
+SQL> 8. The SQL code for the query.
+SP2-0734: unknown command beginning "8. The SQL..." - rest of line ignored.
+SP2-0044: For a list of known commands enter HELP
+and to leave enter EXIT.
+SQL> --
+SQL> 
+SQL> /* Q1 - Join with at least 4 relations */
+SQL> /* Finds the awards earned by clowns that are taught by Jarvis */
+SQL> SELECT DISTINCT c.name, a.DOA, a.type, a.amount
+  2  FROM clown c, award a, enrolledIn e, teaches t
+  3  WHERE a.cSSN = c.cSSN AND
+  4  c.cSSN = e.cSSN AND
+  5  e.CID = t.CID AND
+  6  t.pSSN = 1;
+
+NAME            DOA        TYPE                AMOUNT                           
+--------------- ---------- --------------- ----------                           
+Jef             2019-01-30 Participation          300                           
+Cam             2019-02-10 Great Nose             300                           
+
+2 rows selected.
+
+SQL> 
+SQL> /* Q2 - Self Join */
+SQL> /* Finds all awards of different types which give the same amount */
+SQL> SELECT DISTINCT *
+  2  FROM award a1, award a2
+  3  WHERE a1.type != a2.type AND
+  4  a1.amount = a2.amount;
+
+      CSSN        SID DOA        TYPE                AMOUNT       CSSN          
+---------- ---------- ---------- --------------- ---------- ----------          
+       SID DOA        TYPE                AMOUNT                                
+---------- ---------- --------------- ----------                                
+         2          1 2019-02-10 Great Nose             300          1          
+         1 2019-01-30 Participation          300                                
+                                                                                
+         1          1 2019-01-30 Participation          300          2          
+         1 2019-02-10 Great Nose             300                                
+                                                                                
+
+2 rows selected.
+
+SQL> 
+SQL> /* Q3 - Union */
+SQL> /* Finds all clowns over the age of 30 who are enrolled in the class with CID of 2 */
+SQL> 
+SQL> SELECT *
+  2  FROM clown c
+  3  WHERE c.age > 30
+  4  UNION
+  5  SELECT c.cSSN, c.name, c.age
+  6  FROM clown c, enrolledIn e
+  7  WHERE c.cSSN = e.cSSN AND
+  8  e.CID = 2;
+
+      CSSN NAME                   AGE                                           
+---------- --------------- ----------                                           
+         1 Jef                     20                                           
+         3 Daniel                  70                                           
+
+2 rows selected.
+
+SQL> 
+SQL> /* Q4.5 - Sum and Group By / Having / Order By
+SQL>  Shows the clowns with more than 4 total credits	 */
+SQL> SELECT c.cSSN, c.name, SUM(cc.credits)
+  2  FROM clown c, clownCourse cc, enrolledIn e
+  3  WHERE e.cSSN = c.cSSN AND
+  4  e.CID = cc.CID
+  5  GROUP BY c.cSSN, c.name
+  6  HAVING SUM(cc.credits) > 4
+  7  ORDER BY c.cSSN;
+
+      CSSN NAME            SUM(CC.CREDITS)                                      
+---------- --------------- ---------------                                      
+         1 Jef                           9                                      
+         2 Cam                           7                                      
+
+2 rows selected.
+
+SQL> 
+SQL> /* Q5 - Correlated Subquery
+SQL>  Shows all courses above 2 credits that have a set location.*/
+SQL> SELECT cc.CID, cc.subject, cc.credits
+  2  FROM clownCourse cc
+  3  WHERE cc.credits > 2 AND
+  4  EXISTS
+  5  	 (SELECT *
+  6  	 FROM locations l
+  7  	 WHERE l.CID = cc.CID
+  8  );
+
+       CID SUBJECT            CREDITS                                           
+---------- --------------- ----------                                           
+         1 Juggling                 3                                           
+
+1 row selected.
+
+SQL> 
+SQL> /* Q6 - Non-Correlated Subquery
+SQL> Selects all clowns under 30 that do not own a car.  */
+SQL> SELECT c.cSSN, c.name
+  2  FROM clown c
+  3  WHERE c.age < 30 AND
+  4  c.cSSN NOT IN (
+  5  	 SELECT cr.cSSN
+  6  	 FROM clownCar cr
+  7  );
+
+      CSSN NAME                                                                 
+---------- ---------------                                                      
+         1 Jef                                                                  
+
+1 row selected.
+
+SQL> 
+SQL> /* Q7 - Relational DIVISION Query
+SQL> Finds the cSSN and name of every clown who has taken every course over 2 credits*/
+SQL> SELECT c.cSSN, c.name
+  2  FROM clown c
+  3  WHERE NOT EXISTS((
+  4  	     SELECT cc.CID
+  5  	     FROM clownCourse cc
+  6  	     WHERE cc.credits > 2)
+  7  	 MINUS
+  8  	     (SELECT cc.CID
+  9  	     FROM enrolledIn e, clownCourse cc
+ 10  	     WHERE e.cSSN = c.cSSN AND
+ 11  	     cc.CID = e.CID AND
+ 12  	     cc.credits > 2));
+
+      CSSN NAME                                                                 
+---------- ---------------                                                      
+         1 Jef                                                                  
+         2 Cam                                                                  
+
+2 rows selected.
+
+SQL> 
+SQL> /* Q8 - Left Outer Join
+SQL> */
+SQL> SELECT c.cSSN, c.name, cr.VIN, cr.make, cr.model
+  2  FROM clown c LEFT OUTER JOIN clownCar cr ON c.cSSN = cr.cSSN;
+
+      CSSN NAME                   VIN MAKE            MODEL                     
+---------- --------------- ---------- --------------- ---------------           
+         3 Daniel                   2 clowny          silverado                 
+         2 Cam                      3 bozo            prius                     
+         1 Jef                                                                  
+
+3 rows selected.
+
+SQL> 
+SQL> 
+SQL> < The insert/delete/update statements to test the enforcement of ICs >
+SP2-0734: unknown command beginning "< The inse..." - rest of line ignored.
+SQL> Include the following items for every IC that you test (Important: see the next section titled “Submit a final report” regarding which ICs to test).
+SP2-0734: unknown command beginning "Include th..." - rest of line ignored.
+SQL> A comment line stating: Testing: < IC name>
+  2* FROM clown c LEFT OUTER JOIN clownCar cr ON c.cSSN = cr.cSSNcomment line stating: Testing: < IC name>
+SQL> 
+SQL> /*Testing IC carl*/
+SQL> INSERT INTO clown VALUES (3, 'Carl', 12);
+INSERT INTO clown VALUES (3, 'Carl', 12)
+*
+ERROR at line 1:
+ORA-02290: check constraint (BAILEYLU.CARL) violated 
+
+
+SQL> 
+SQL> /*Testing IC a1*/
+SQL> INSERT INTO award VALUES (2, 1, '2019-02-10', 'Participation', 900);
+INSERT INTO award VALUES (2, 1, '2019-02-10', 'Participation', 900)
+*
+ERROR at line 1:
+ORA-02290: check constraint (BAILEYLU.A1) violated 
+
+
+SQL> 
+SQL> /*Testing clown primary key*/
+SQL> INSERT INTO clown VALUES (1, 'Doofus', 45);
+INSERT INTO clown VALUES (1, 'Doofus', 45)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (BAILEYLU.SYS_C00779651) violated 
+
+
+SQL> 
+SQL> /*Testing cSSN 1*/
+SQL> DELETE FROM clown WHERE cSSN = 1;
+DELETE FROM clown WHERE cSSN = 1
+*
+ERROR at line 1:
+ORA-02292: integrity constraint (BAILEYLU.CSSN1) violated - child record found 
+
+
+SQL> 
+SQL> A SQL INSERT, DELETE, or UPDATE that will test the IC.
+  1* DELETE FROM clown WHERE cSSN = 1SQL INSERT, DELETE, or UPDATE that will test the IC.
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> --
+SQL> SPOOL OFF
