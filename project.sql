@@ -8,8 +8,8 @@ Lucas Bailey
 Sam Petrarca
 */ 
 
-DROP TABLE sponsor;
 DROP TABLE award;
+DROP TABLE sponsor;
 DROP TABLE locations;
 DROP TABLE enrolledIn;
 DROP TABLE teaches;

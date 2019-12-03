@@ -1,19 +1,17 @@
 SQL> SET ECHO ON
+SQL> SET sqlblanklines ON
+SQL> 
 SQL> /*
 SQL> CIS 353 - Database Design Project
 SQL> Lucas Bailey
 SQL> Sam Petrarca
 SQL> */
-SQL> SET sqlblanklines ON
 SQL> 
-SQL> DROP TABLE sponsor;
-DROP TABLE sponsor
-           *
-ERROR at line 1:
-ORA-02449: unique/primary keys in table referenced by foreign keys 
-
-
 SQL> DROP TABLE award;
+
+Table dropped.
+
+SQL> DROP TABLE sponsor;
 
 Table dropped.
 
@@ -99,11 +97,8 @@ SQL> CREATE TABLE sponsor
   3  sID INTEGER PRIMARY KEY,
   4  sName CHAR(15) NOT NULL
   5  );
-CREATE TABLE sponsor
-             *
-ERROR at line 1:
-ORA-00955: name is already used by an existing object 
 
+Table created.
 
 SQL> 
 SQL> CREATE TABLE award
@@ -191,12 +186,6 @@ SQL> INSERT INTO clownCourse VALUES (2, 'Driving', 2);
 SQL> INSERT INTO clownCourse VALUES (3, 'Lion Wrestling', 4);
 SQL> INSERT INTO clownProfessor VALUES (1, 'Jarvis', 35);
 SQL> INSERT INTO sponsor VALUES (1, 'macDangles');
-INSERT INTO sponsor VALUES (1, 'macDangles')
-*
-ERROR at line 1:
-ORA-00001: unique constraint (BAILEYLU.SYS_C00776772) violated 
-
-
 SQL> INSERT INTO award VALUES (1, 1, '2019-01-30', 'Participation', 300);
 SQL> INSERT INTO award VALUES (2, 1, '2019-02-10', 'Great Nose', 300);
 SQL> INSERT INTO locations VALUES (1, 'Allendale');
@@ -319,8 +308,11 @@ SP2-0044: For a list of known commands enter HELP
 and to leave enter EXIT.
 SQL> --
 SQL> 
-SQL> /* Q1 - Join with at least 4 relations */
-SQL> /* Finds the awards earned by clowns that are taught by Jarvis */
+SQL> 
+SQL> /* Q1 - Join with at least 4 relations
+SQL>  Finds the awards earned by clowns that are taught by the teacher with an
+SQL>  SSN of 1
+SQL>  */
 SQL> SELECT DISTINCT c.name, a.DOA, a.type, a.amount
   2  FROM clown c, award a, enrolledIn e, teaches t
   3  WHERE a.cSSN = c.cSSN AND
@@ -336,8 +328,9 @@ Cam             2019-02-10 Great Nose             300
 2 rows selected.
 
 SQL> 
-SQL> /* Q2 - Self Join */
-SQL> /* Finds all awards of different types which give the same amount */
+SQL> 
+SQL> /* Q2 - Self Join
+SQL> Finds all awards of different types which give the same amount */
 SQL> SELECT DISTINCT *
   2  FROM award a1, award a2
   3  WHERE a1.type != a2.type AND
@@ -357,9 +350,9 @@ SQL> SELECT DISTINCT *
 2 rows selected.
 
 SQL> 
-SQL> /* Q3 - Union */
-SQL> /* Finds all clowns over the age of 30 who are enrolled in the class with CID of 2 */
 SQL> 
+SQL> /* Q3 - Union
+SQL> Finds all clowns over the age of 30 who are enrolled in the class with CID of 2 */
 SQL> SELECT *
   2  FROM clown c
   3  WHERE c.age > 30
@@ -376,6 +369,7 @@ SQL> SELECT *
 
 2 rows selected.
 
+SQL> 
 SQL> 
 SQL> /* Q4.5 - Sum and Group By / Having / Order By
 SQL>  Shows the clowns with more than 4 total credits	 */
@@ -395,6 +389,7 @@ SQL> SELECT c.cSSN, c.name, SUM(cc.credits)
 2 rows selected.
 
 SQL> 
+SQL> 
 SQL> /* Q5 - Correlated Subquery
 SQL>  Shows all courses above 2 credits that have a set location.*/
 SQL> SELECT cc.CID, cc.subject, cc.credits
@@ -413,6 +408,7 @@ SQL> SELECT cc.CID, cc.subject, cc.credits
 1 row selected.
 
 SQL> 
+SQL> 
 SQL> /* Q6 - Non-Correlated Subquery
 SQL> Selects all clowns under 30 that do not own a car.  */
 SQL> SELECT c.cSSN, c.name
@@ -429,6 +425,7 @@ SQL> SELECT c.cSSN, c.name
 
 1 row selected.
 
+SQL> 
 SQL> 
 SQL> /* Q7 - Relational DIVISION Query
 SQL> Finds the cSSN and name of every clown who has taken every course over 2 credits*/
@@ -454,7 +451,7 @@ SQL> SELECT c.cSSN, c.name
 
 SQL> 
 SQL> /* Q8 - Left Outer Join
-SQL> */
+SQL> Selects every clown and displays their information, and if they have a car it displays the information of that clown car	 */
 SQL> SELECT c.cSSN, c.name, cr.VIN, cr.make, cr.model
   2  FROM clown c LEFT OUTER JOIN clownCar cr ON c.cSSN = cr.cSSN;
 
@@ -475,7 +472,7 @@ SP2-0734: unknown command beginning "Include th..." - rest of line ignored.
 SQL> A comment line stating: Testing: < IC name>
   2* FROM clown c LEFT OUTER JOIN clownCar cr ON c.cSSN = cr.cSSNcomment line stating: Testing: < IC name>
 SQL> 
-SQL> /*Testing IC carl*/
+SQL> /* Testing IC carl */
 SQL> INSERT INTO clown VALUES (3, 'Carl', 12);
 INSERT INTO clown VALUES (3, 'Carl', 12)
 *
@@ -484,7 +481,7 @@ ORA-02290: check constraint (BAILEYLU.CARL) violated
 
 
 SQL> 
-SQL> /*Testing IC a1*/
+SQL> /* Testing IC A1 */
 SQL> INSERT INTO award VALUES (2, 1, '2019-02-10', 'Participation', 900);
 INSERT INTO award VALUES (2, 1, '2019-02-10', 'Participation', 900)
 *
@@ -493,16 +490,16 @@ ORA-02290: check constraint (BAILEYLU.A1) violated
 
 
 SQL> 
-SQL> /*Testing clown primary key*/
+SQL> /* Testing clown primary key */
 SQL> INSERT INTO clown VALUES (1, 'Doofus', 45);
 INSERT INTO clown VALUES (1, 'Doofus', 45)
 *
 ERROR at line 1:
-ORA-00001: unique constraint (BAILEYLU.SYS_C00779651) violated 
+ORA-00001: unique constraint (BAILEYLU.SYS_C00781108) violated 
 
 
 SQL> 
-SQL> /*Testing cSSN 1*/
+SQL> /* Testing IC cSSN1 */
 SQL> DELETE FROM clown WHERE cSSN = 1;
 DELETE FROM clown WHERE cSSN = 1
 *
@@ -511,8 +508,6 @@ ORA-02292: integrity constraint (BAILEYLU.CSSN1) violated - child record found
 
 
 SQL> 
-SQL> A SQL INSERT, DELETE, or UPDATE that will test the IC.
-  1* DELETE FROM clown WHERE cSSN = 1SQL INSERT, DELETE, or UPDATE that will test the IC.
 SQL> COMMIT;
 
 Commit complete.
